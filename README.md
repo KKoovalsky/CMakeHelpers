@@ -14,6 +14,7 @@ include(FetchContent)
 FetchContent_Declare(
     cmake_helpers
     GIT_REPOSITORY https://github.com/KKoovalsky/CMakeHelpers.git
+    GIT_TAG main
 )
 FetchContent_MakeAvailable(cmake_helpers)
 
