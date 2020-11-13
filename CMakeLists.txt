@@ -2,11 +2,12 @@ cmake_minimum_required(VERSION 3.16)
 
 function(JunglesHelpers_DownloadAndPopulateHeaderOnlyLibrary target_name git_repository git_tag)
 
-    set(src_dir ${CMAKE_BINARY_DIR}/${target_name})
+    include(ExternalProject)
 
-    include(FetchContent)
+    set(header_only_lib ${target_name}_sources)
+    set(src_dir ${PROJECT_BINARY_DIR}/${header_only_lib}) 
 
-    FetchContent_Declare(header_only_lib
+    ExternalProject_Add(${header_only_lib}
         GIT_REPOSITORY ${git_repository}
         GIT_TAG ${git_tag}
         GIT_PROGRESS 1
@@ -16,7 +17,6 @@ function(JunglesHelpers_DownloadAndPopulateHeaderOnlyLibrary target_name git_rep
         INSTALL_COMMAND ""
         TEST_COMMAND ""
     )
-    FetchContent_MakeAvailable(header_only_lib)
 
     set(options "")
     set(one_value_keywords "")
@@ -26,6 +26,7 @@ function(JunglesHelpers_DownloadAndPopulateHeaderOnlyLibrary target_name git_rep
     list(TRANSFORM HELPERS_INCLUDE_RELPATHS PREPEND "${src_dir}/" OUTPUT_VARIABLE absolute_include_paths)
 
     add_library(${target_name} INTERFACE)
+    add_dependencies(${target_name} ${header_only_lib})
     target_include_directories(${target_name} INTERFACE ${absolute_include_paths})
 
 endfunction()
